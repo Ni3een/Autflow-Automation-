@@ -4,11 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 const Page = async () => {
-  await UnrequireAuth();  
+  await UnrequireAuth();
   return (
     <div>
-        <LoginForm />
-      </div>
+      <LoginForm />
+    </div>
   );
 };
+
 export default Page;
