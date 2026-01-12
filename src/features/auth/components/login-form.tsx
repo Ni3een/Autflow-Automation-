@@ -9,6 +9,7 @@ import {useRouter} from "next/navigation";
 import {toast} from "sonner";
 import Link from "next/link";
 import Image from "next/image";
+ 
 import {
     Card,
     CardContent,
@@ -73,6 +74,8 @@ export function LoginForm(){
                                     <Button variant="outline" className="w-full" type="button" disabled={isPending}>
                                         <Image alt="Github" src="/logo/github-sign.svg" height={20} width={20}></Image>
                                         Continue with GitHub
+
+                                        Continue with Github
                                     </Button>
                                 </div>
                                  <div className="flex flex-col gap-4">
