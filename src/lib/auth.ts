@@ -11,3 +11,5 @@ export const auth=betterAuth({
         autoSignIn:true,
      },
 });
+
+});
