@@ -75,7 +75,6 @@ export function LoginForm(){
                                         <Image alt="Github" src="/logo/github-sign.svg" height={20} width={20}></Image>
                                         Continue with GitHub
 
-                                        Continue with Github
                                     </Button>
                                 </div>
                                  <div className="flex flex-col gap-4">
