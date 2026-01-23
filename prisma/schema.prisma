@@ -106,14 +106,11 @@ model Subscription {
 model Workflow {
   id          String   @id @default(cuid())
   name        String
-  description String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  nodes       Json?    // Store workflow nodes as JSON
-  edges       Json?    // Store workflow connections as JSON
-  isActive    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  userId       String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
 
   @@map("workflow")
 }

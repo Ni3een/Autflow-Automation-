@@ -27,7 +27,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 import { use } from "react";
-import { useHasActiveSubscription } from "@/features/auth/components/payments/hooks/use-subscription";
+import { useHasActiveSubscription } from "@/features/payments/hooks/use-subscription";
 
 // Fixed and expanded menu items (flat array - no need for groups unless you want sections)
 const menuItems = [
