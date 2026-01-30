@@ -4,6 +4,11 @@ import {prefetch,trpc} from '@/trpc/server';
 type Input=inferInput<typeof trpc.workflows.getMany>;
 
 
-export const prefetchWorkflows=async(input:Input)=>{
-    await prefetch(trpc.workflows.getMany.queryOptions(input));
+export const prefetchWorkflows=(input:Input)=>{
+    return prefetch(trpc.workflows.getMany.queryOptions(input));
+}
+
+// pretech for single workflow
+export const prefetchWorkflow=(id:string)=>{
+    return prefetch(trpc.workflows.getOne.queryOptions({ id }));
 }
