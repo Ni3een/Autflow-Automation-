@@ -95,7 +95,7 @@ export const EditorBreadcrumbs=({workflowId}:{workflowId:string})=>{
            <BreadcrumbSeparator/>
            <EditorNameInput workflowId={workflowId}/>
            </BreadcrumbList>
-           </Breadcrumb>
+            </Breadcrumb>
     )
 }
 export const EditorHeader=({workflowId}:{workflowId:string})=>{
