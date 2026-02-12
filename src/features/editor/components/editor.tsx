@@ -21,7 +21,9 @@ import {
   Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useSetAtom } from "jotai";
 import { AddNodeButton } from "../add-node-button";
+import { editorAtom } from "../store/atom";
 
 
 
@@ -32,6 +34,8 @@ export const EditorError = () => <ErrorView message="Failed to load editor." />;
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  const setEditor=useSetAtom(editorAtom);
   
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
@@ -62,6 +66,12 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         fitView
         proOptions={{ hideAttribution: true }}
         nodeTypes={nodeComponents}
+        onInit={setEditor}
+        snapGrid={[10,10]}
+        snapToGrid
+        panOnScroll
+        panOnDrag={false}
+        selectNodesOnDrag
       >
         <Background
           variant={BackgroundVariant.Dots} color="pink"
