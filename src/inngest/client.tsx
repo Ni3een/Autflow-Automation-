@@ -12,6 +12,11 @@ type Events = {
       prompt?: string;
     };
   };
+  "workflows/execute.workflow": {
+    data: {
+      workflowId: string;
+    };
+  };
 };
 
 // Create a client to send and receive events
