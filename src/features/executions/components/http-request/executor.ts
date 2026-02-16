@@ -2,6 +2,7 @@ import type {NodeExecutor} from "@/features/executions/types";
 import { NonRetriableError } from "inngest";
 import ky,{type Options as KyOptions } from "ky";
 import Handlebars from "handlebars";
+import { httpRequestChannel } from "@/inngest/channels/http-request";
 
 Handlebars.registerHelper("json",(context)=>{
     const jsonString=JSON.stringify(context,null,2);
@@ -18,16 +19,43 @@ type HttpRequestData={
 export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
     data,
     nodeId,context,step,
+    publish,
 })=>{
+    await publish(
+        httpRequestChannel().status({
+            nodeId,
+            status:"loading",
+
+        }),
+    )
     if(!data.endpoint){
-        throw new NonRetriableError("Endpoint is required for HTTP Request node")
+        await publish(
+            httpRequestChannel().status({
+                nodeId,
+                status:"error",
+                error:"Endpoint is required for HTTP Request node",
+            }),
+        )
     }
     if(!data.variableName){
-        throw new NonRetriableError("Variable name is required for HTTP Request node")
+        await publish(
+            httpRequestChannel().status({
+                nodeId,
+                status:"error",
+                error:"Variable name is required for HTTP Request node",
+            }),
+        )
     }
     if(!data.method){
-        throw new NonRetriableError("Method is required for HTTP Request node")
-    }
+        await publish(
+            httpRequestChannel().status({
+                nodeId,
+                status:"error",
+                error:"Method is required for HTTP Request node",
+            }),
+        )
+        }
+        try{
     const result=await step.run("https-request",async()=>{
         const endpoint=Handlebars.compile(data.endpoint)(context)
         const method=data.method;
@@ -56,5 +84,20 @@ export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
             [data.variableName!]:responsePayLoad,
         }
     })
+    await publish(
+            httpRequestChannel().status({
+                nodeId,
+                status:"success",
+            }),
+        )
     return result;
+        } catch(error){
+            await publish(
+                httpRequestChannel().status({
+                    nodeId,
+                    status:"error",
+                }),
+            );
+            throw error;
+        }
 }
