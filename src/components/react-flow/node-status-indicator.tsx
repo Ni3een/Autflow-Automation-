@@ -80,7 +80,7 @@ const StatusBorder = ({
     <>
       <div
         className={cn(
-          "absolute -top-[2px] -left-[2px] h-[calc(100%+4px)] w-[calc(100%+4px)] rounded-md border-3",
+          "absolute -top-[2px] -left-[2px] h-[calc(100%+4px)] w-[calc(100%+4px)] rounded-md border-2",
           className,
         )}
       />
@@ -107,10 +107,10 @@ export const NodeStatusIndicator = ({
       }
     case "success":
       return (
-        <StatusBorder className={cn("border-emerald-700/50", className)}>{children}</StatusBorder>
+        <StatusBorder className={cn("border-emerald-500", className)}>{children}</StatusBorder>
       );
     case "error":
-      return <StatusBorder className={cn("border-red-700/50", className)}>{children}</StatusBorder>;
+      return <StatusBorder className={cn("border-red-500", className)}>{children}</StatusBorder>;
     default:
       return <>{children}</>;
   }
