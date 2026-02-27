@@ -5,6 +5,7 @@ import { NodeType } from "@prisma/client";
 import { NodeExecutor } from "@/features/executions/types";
 import { Node, Edge } from "@xyflow/react";
 import { topologicalSort } from "./utils";
+import { googleFormTriggerChannel } from "@/inngest/channels/google-form-trigger"
 import {manualTriggerChannel} from "@/inngest/channels/manual_trigger";
 import { getExecutor } from "@/features/executions/components/http-request/lib/executor-registry";
 import { httpRequestChannel } from "./channels/http-request";
@@ -14,6 +15,7 @@ export const executeWorkflow = inngest.createFunction(
     channels:[
       httpRequestChannel(),
       manualTriggerChannel(),
+      googleFormTriggerChannel(),
     ]
    },
   async ({ event, step,publish }) => {
