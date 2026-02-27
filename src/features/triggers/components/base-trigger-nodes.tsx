@@ -61,7 +61,8 @@ export const BaseTriggerNode = memo(
                     {typeof icon === "string" ? (
                         <Image src={icon} 
                         alt={name} width={16} 
-                        height={16} 
+                        height={16}
+                        unoptimized
                         />
                     ) : (
                         (() => { const IconComponent = icon; return <IconComponent className="size-4 text-muted-foreground" />; })()

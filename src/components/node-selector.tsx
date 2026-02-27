@@ -8,7 +8,6 @@ import {
 } from "lucide-react"
 import {PlaceholderNode} from "./react-flow/placeholder-node"
 import {useCallback} from "react"
-
 import {toast} from "sonner"
 import {NodeType} from "@prisma/client"
 import {Separator} from "@/components/ui/separator"
@@ -30,7 +29,14 @@ const TriggerNodes:NodeTypeOption[]=[
         description:"Run the workflow on clicking a button.Good for getting started quickly",
         icon:MousePointerIcon,
     }
+,    {
+        type:NodeType.GOOGLE_FORM_TRIGGER,
+        label:"Google Form Trigger",
+        description:"Run the workflow when a Google Form is submitted",
+        icon:"/logos/google-forms.svg",
+    }
 ]
+
 
 const excutionNodes:NodeTypeOption[]=[
     {
