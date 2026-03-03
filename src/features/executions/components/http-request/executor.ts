@@ -11,9 +11,9 @@ Handlebars.registerHelper("json",(context)=>{
 });
 
 type HttpRequestData={
-    variableName:string,
-    endpoint:string,
-    method:"GET"|"POST"|"PUT"|"DELETE"|"PATCH"
+    variableName?:string,
+    endpoint?:string,
+    method?:"GET"|"POST"|"PUT"|"DELETE"|"PATCH"
     body?:string;
 }
 export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
@@ -28,7 +28,10 @@ export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
 
         }),
     )
-    if(!data.endpoint){
+    
+        try{
+    const result=await step.run("https-request",async()=>{
+        if(!data.endpoint){
         await publish(
             httpRequestChannel().status({
                 nodeId,
@@ -36,6 +39,7 @@ export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
                 error:"Endpoint is required for HTTP Request node",
             }),
         )
+        throw new NonRetriableError("Endpoint is required for HTTP Request node");
     }
     if(!data.variableName){
         await publish(
@@ -45,6 +49,7 @@ export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
                 error:"Variable name is required for HTTP Request node",
             }),
         )
+        throw new NonRetriableError("Variable name is required for HTTP Request node");
     }
     if(!data.method){
         await publish(
@@ -54,11 +59,10 @@ export const httpRequestExecutor:NodeExecutor<HttpRequestData>=async({
                 error:"Method is required for HTTP Request node",
             }),
         )
+        throw new NonRetriableError("Method is required for HTTP Request node");
         }
-        try{
-    const result=await step.run("https-request",async()=>{
-        const endpoint=Handlebars.compile(data.endpoint)(context)
-        const method=data.method;
+        const endpoint=Handlebars.compile(data.endpoint!)(context)
+        const method=data.method!;
 
         const options:KyOptions={method};
         if(["POST","PUT","PATCH"].includes(method)){
