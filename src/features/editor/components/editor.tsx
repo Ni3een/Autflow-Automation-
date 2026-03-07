@@ -60,7 +60,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
   }, [nodes]);
 
   return (
-    <div className="size-full">
+    <div className="size-full" style={{ backgroundColor: '#ffffff' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -77,7 +77,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         panOnDrag={false}
         selectNodesOnDrag
       >
-        <Background variant={BackgroundVariant.Dots} color="pink" />
+        <Background variant={BackgroundVariant.Dots} color="rgba(0, 0, 0, 0.3)" gap={22} size={1.2} />
         <Controls />
         <MiniMap />
         <Panel position="top-right">

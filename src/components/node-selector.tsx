@@ -40,6 +40,24 @@ const TriggerNodes:NodeTypeOption[]=[
         label:"Stripe Trigger",
         description:"Run the workflow when a Stripe event occurs",
         icon:"/logo/stripe.svg",
+    },
+    {
+        type:NodeType.GEMINI,
+        label:"Gemini",
+        description:"Uses Google Gemini to generate text",
+        icon:"/logo/gemini-color.svg",
+    },
+     {
+        type:NodeType.OPENAI,
+        label:"OpenAI",
+        description:"Uses OpenAI to generate text",
+        icon:"/logo/openai.svg",
+    },
+    {
+        type:NodeType.GROQ,
+        label:"GROQ",
+        description:"Uses GROQ to generate text",
+        icon:"/logo/groq.svg",
     }
 ]
 
