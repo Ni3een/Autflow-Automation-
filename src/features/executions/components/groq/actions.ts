@@ -1,21 +1,15 @@
-
 "use server"
 import {getSubscriptionToken,type Realtime} from "@inngest/realtime"
 import {httpRequestChannel} from "@/inngest/channels/http-request";
 import {inngest} from "@/inngest/client";
-
-export type HttpsRequestToken=Realtime.Token<typeof httpRequestChannel,
+import {grokChannel} from "@/inngest/channels/groq";
+export type GroqToken=Realtime.Token<typeof grokChannel,
 ["status"]
 >
-export async function fetchHttpRequestRealtimeToken(): Promise<HttpsRequestToken> {
+export async function fetchGroqRealtimeToken(): Promise<GroqToken> {
     const token = await getSubscriptionToken(inngest, {
-        channel: httpRequestChannel(),
+        channel: grokChannel(),
         topics: ["status"],
     });
     return token;
 }
-    
-
-
-    
-

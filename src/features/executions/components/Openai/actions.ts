@@ -1,21 +1,15 @@
-
 "use server"
 import {getSubscriptionToken,type Realtime} from "@inngest/realtime"
 import {httpRequestChannel} from "@/inngest/channels/http-request";
 import {inngest} from "@/inngest/client";
-
-export type HttpsRequestToken=Realtime.Token<typeof httpRequestChannel,
+import { openaiChannel } from "@/inngest/channels/openai";
+export type OpenAiToken=Realtime.Token<typeof openaiChannel,
 ["status"]
 >
-export async function fetchHttpRequestRealtimeToken(): Promise<HttpsRequestToken> {
+export async function fetchOpenAiRealtimeToken(): Promise<OpenAiToken> {
     const token = await getSubscriptionToken(inngest, {
-        channel: httpRequestChannel(),
+        channel: openaiChannel(),
         topics: ["status"],
     });
     return token;
 }
-    
-
-
-    
-

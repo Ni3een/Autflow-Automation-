@@ -21,13 +21,7 @@ export const topologicalSort=(
         connectedNodeIds.add(conn.toNodeID);
     }
     
-    for(const node of nodes){
-        if(!connectedNodeIds.has(node.id)){
-            edges.push([node.id,node.id]);
-        }
-    }
-    
-    // perform topological sort
+    // perform topological sort on connected nodes
     let sortedNodeIds:string[];
     try{
         sortedNodeIds=toposort(edges);
@@ -40,9 +34,13 @@ export const topologicalSort=(
         throw error;
     }
 
+    // append disconnected nodes at the end
+    const disconnectedNodes=nodes.filter((n)=>!connectedNodeIds.has(n.id));
+
     // map sorted Id back to node object
     const nodeMap=new Map(nodes.map((n)=>[n.id,n]));
-    return sortedNodeIds.map((id)=>nodeMap.get(id)!).filter(Boolean);
+    const sorted=sortedNodeIds.map((id)=>nodeMap.get(id)!).filter(Boolean);
+    return [...sorted,...disconnectedNodes];
 }
 
 export const sendWorkflowExecutions=async (data:{
