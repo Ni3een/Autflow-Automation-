@@ -3,6 +3,7 @@ import { NonRetriableError } from "inngest";
 import ky,{type Options as KyOptions } from "ky";
 import Handlebars from "handlebars";
 import {generateText} from "ai"
+import prisma from "@/lib/db";
 import {createGoogleGenerativeAI} from "@ai-sdk/google"
 import {geminiChannel} from "@/inngest/channels/gemini";
 Handlebars.registerHelper("json",(context)=>{
@@ -13,7 +14,7 @@ Handlebars.registerHelper("json",(context)=>{
 
 type GeminiData={
     variableName?:string,
-    model?:string,
+    credentialId?:string,
     systemPrompt?:string,
     userPrompt?:string;
 }
@@ -47,21 +48,43 @@ export const geminiExecutor:NodeExecutor<GeminiData>=async({
         )
         throw new NonRetriableError("User prompt is required")
     }
+    if(!data.credentialId){
+        await publish(
+            geminiChannel().status({
+                nodeId,
+                status:"error",
+            }),
+
+        )
+        throw new NonRetriableError("Credential ID is required")
+    }
     const systemPrompt=data.systemPrompt?Handlebars.compile(data.systemPrompt)(context)
     :"You are a helpful assistant."
 
     const userPrompt=Handlebars.compile(data.userPrompt)(context);
 
     // fetch credentials from context
-    const creditialValue=process.env.GOOGLE_GENERATIVE_AI_API_KEY
+    const credential=(await step.run("get-credential",()=>{
+        return prisma.credential.findUnique({
+            where:{
+                id:data.credentialId,
+            },
+            select: {
+                value: true,
+            },
+        })
+    })) as { value: string } | null
+    if(!credential?.value){
+        throw new NonRetriableError("Credential not found")
+    }
     const google=createGoogleGenerativeAI({
-        apiKey:creditialValue,
+        apiKey:credential.value,
     });
     try{
         const result=await step.ai.wrap("gemini-generate-text",
         generateText,
         {
-            model:google(data.model || "gemini-2.0-flash"),
+            model:google("gemini-2.0-flash"),
             system:systemPrompt,
             prompt:userPrompt,
             experimental_telemetry:{

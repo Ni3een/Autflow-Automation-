@@ -8,10 +8,10 @@ import {memo} from "react"
 import {OpenAiDialog, type OpenaiFormValues} from "./dialog"
 import  {fetchOpenAiRealtimeToken} from "./actions"
 import {OPENAI_CHANNEL_NAME} from "@/inngest/channels/openai"
-import {openai} from "@ai-sdk/openai"
 import { useNodeStatus } from "../../hooks/use-node-status"
 type OpenaiNodeData={
     variableName?:string;
+    credentialId?:string;
     systemPrompt?:string;
     userPrompt?:string;
 };
@@ -26,7 +26,7 @@ export const OpenAiNode=memo((props:NodeProps<OpenaiNodeType>)=>{
     });
     const handleOpenSetting=()=>setDialogOpen(true);
     const {setNodes}=useReactFlow();
-    const handleSubmit=(values:OpenaiFormValues )=>{
+    const handleSubmit=(values:OpenaiFormValues)=>{
         setNodes((nodes)=> nodes.map(node=>{
             if(node.id===props.id){
                 return {

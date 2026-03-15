@@ -4,14 +4,13 @@ import {Node ,NodeProps, useReactFlow} from "@xyflow/react"
 import {GlobeIcon} from "lucide-react"
 import {BaseExecutionNode} from "../base-execution-nodes"
 import {memo} from "react"
-import {GroqDialoge} from "./dialog"
-import {GEMINI_CHANNEL_NAME} from "@/inngest/channels/gemini"
+import {GroqDialoge, type GroqFormValues} from "./dialog"
 import { useNodeStatus } from "../../hooks/use-node-status"
-import { HTTP_REQUEST_CHANNEL_NAME } from "@/inngest/channels/http-request"
 import {  fetchGroqRealtimeToken } from "./actions"
 import { GROQ_CHANNEL_NAME } from "@/inngest/channels/groq"
 type GroqNodeData={
     variableName?:string;
+    credentialId?:string;
     systemPrompt?:string;
     userPrompt?:string;
 };
@@ -26,7 +25,7 @@ export const GroqNode=memo((props:NodeProps<GroqNodeType>)=>{
     });
     const handleOpenSetting=()=>setDialogOpen(true);
     const {setNodes}=useReactFlow();
-    const handleSubmit=(values:GroqNodeData )=>{
+    const handleSubmit=(values:GroqFormValues)=>{
         setNodes((nodes)=> nodes.map(node=>{
             if(node.id===props.id){
                 return {
