@@ -4,10 +4,10 @@ import { manualTriggerExecutor } from "@/features/triggers/components/manual-tri
 import { httpRequestExecutor } from "@/features/executions/components/http-request/executor";
 import { googleFormTriggerExecutor } from "@/features/triggers/components/google-form-trigger/executor";
 import { stripeTriggerExecutor } from "@/features/triggers/components/stripe-trigger/executor";
-import { geminiExecutor } from "@/features/executions/components/gemini/executor";
 import { openaiExecutor } from "@/features/executions/components/Openai/executor";
-import { groqExecutor } from "../executor";
-import { discordExecutor } from "@/features/executions/components/discord/executor";
+import { geminiExecutor } from "@/features/executions/components/gemini/executor";
+import { groqExecutor } from "@/features/executions/components/groq/executor";
+import { discordExecutor } from "../executor";
 export const executorRegistry:Record<NodeType,NodeExecutor>={
     [NodeType.MANUAL_TRIGGER]:manualTriggerExecutor,
     [NodeType.INITIAL]:manualTriggerExecutor,
@@ -19,7 +19,7 @@ export const executorRegistry:Record<NodeType,NodeExecutor>={
     [NodeType.OPENAI]:openaiExecutor,
     [NodeType.GROQ]:groqExecutor,
     [NodeType.DISCORD]:discordExecutor,
-    [NodeType.SLACK]:httpRequestExecutor,
+    [NodeType.SLACK]:discordExecutor,
 };
 export const getExecutor=(type:NodeType):NodeExecutor=>{
     const executor=executorRegistry[type];

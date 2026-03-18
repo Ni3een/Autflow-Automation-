@@ -6,13 +6,12 @@ import {
     GlobeIcon,MousePointerIcon
 
 } from "lucide-react"
-import {PlaceholderNode} from "./react-flow/placeholder-node"
 import {useCallback} from "react"
 import {toast} from "sonner"
 import {NodeType} from "@prisma/client"
 import {Separator} from "@/components/ui/separator"
 import {
-    Sheet,SheetContent,SheetHeader,SheetTitle,SheetDescription,SheetClose,SheetFooter,
+    Sheet,SheetContent,SheetHeader,SheetTitle,SheetDescription,
     SheetTrigger
 } from "@/components/ui/sheet"
 
@@ -26,20 +25,29 @@ const TriggerNodes:NodeTypeOption[]=[
     {
         type:NodeType.MANUAL_TRIGGER,
         label:"Trigger manually",
-        description:"Run the workflow on clicking a button.Good for getting started quickly",
+        description:"Runs the flow on clicking a button. Good for getting started quickly",
         icon:MousePointerIcon,
-    }
-,    {
+    },
+    {
         type:NodeType.GOOGLE_FORM_TRIGGER,
-        label:"Google Form Trigger",
-        description:"Run the workflow when a Google Form is submitted",
+        label:"Google Form",
+        description:"Runs the flow when a Google Form is submitted",
         icon:"/logo/google-form.svg",
     },
     {
         type:NodeType.STRIPE_TRIGGER,
-        label:"Stripe Trigger",
-        description:"Run the workflow when a Stripe event occurs",
+        label:"Stripe Event",
+        description:"Runs the flow when a Stripe event is captured",
         icon:"/logo/stripe.svg",
+    }
+]
+
+const executionNodes:NodeTypeOption[]=[
+    {
+        type:NodeType.HTTP_REQUEST,
+        label:"HTTP Request",
+        description:"Makes an HTTP request",
+        icon:GlobeIcon,
     },
     {
         type:NodeType.GEMINI,
@@ -47,7 +55,7 @@ const TriggerNodes:NodeTypeOption[]=[
         description:"Uses Google Gemini to generate text",
         icon:"/logo/gemini-color.svg",
     },
-     {
+    {
         type:NodeType.OPENAI,
         label:"OpenAI",
         description:"Uses OpenAI to generate text",
@@ -58,23 +66,59 @@ const TriggerNodes:NodeTypeOption[]=[
         label:"GROQ",
         description:"Uses GROQ to generate text",
         icon:"/logo/groq.svg",
-    }
-]
-
-
-const excutionNodes:NodeTypeOption[]=[
+    },
     {
-        type:NodeType.HTTP_REQUEST,
-        label:"HTTP Request",
-        description:"Make HTTP requests to interact with APIs and web services",
-        icon:GlobeIcon,
+        type:NodeType.DISCORD,
+        label:"Discord",
+        description:"Sends messages using Discord webhook",
+        icon:"/logo/discord.svg",
+    },
+    {
+        type:NodeType.SLACK,
+        label:"Slack",
+        description:"Sends messages using Slack webhook",
+        icon:"/logo/slack.svg",
     }
 ]
+
 interface NodeSelectorProps{
     open:boolean;
     onOpenChange:(open:boolean)=>void;
     children?:React.ReactNode;
 }
+
+const OptionRow = ({
+    option,
+    onSelect,
+}: {
+    option: NodeTypeOption;
+    onSelect: (node: NodeTypeOption) => void;
+}) => {
+    const Icon = option.icon;
+
+    return (
+        <button
+            type="button"
+            className="w-full rounded-none border-l-2 border-transparent px-3 py-3 text-left transition-colors hover:border-l-primary hover:bg-accent/40"
+            onClick={() => onSelect(option)}
+        >
+            <div className="flex w-full items-start gap-4 overflow-hidden">
+                <div className="mt-0.5 shrink-0">
+                    {typeof Icon === "string" ? (
+                        <img src={Icon} alt={option.label} className="size-5 object-contain" />
+                    ) : (
+                        <Icon className="size-5" />
+                    )}
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm font-medium leading-5">{option.label}</p>
+                    <p className="text-xs text-muted-foreground leading-4">{option.description}</p>
+                </div>
+            </div>
+        </button>
+    )
+}
+
 export function NodeSelector({
     open,
     onOpenChange,
@@ -121,66 +165,26 @@ export function NodeSelector({
             <SheetTrigger asChild>{children}</SheetTrigger>
             <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
                 <SheetHeader>
-                    <SheetTitle>What triggers this worflow?
-
-                    </SheetTitle>
+                    <SheetTitle>What triggers this workflow?</SheetTitle>
                     <SheetDescription>
-                        A triffer is a step that starts your workflow.
+                        A trigger is a step that starts your workflow.
                     </SheetDescription>
-                    </SheetHeader>
-                    <div>
-                        {TriggerNodes.map((nodeType)=>{
-                            const Icon=nodeType.icon;
-                            return(
-                                    <div key={nodeType.type} className="w-full justify-start h-auto py-5 px-4
-                                    rounded-none cursor-pointer border-l02 border-transparent hover:border-l-primary"
-                                    onClick={()=>handleNodeSelect(nodeType)}
-                                    >
-                                        <div className="flex items-center gap-6 w-full overflow-hidden">
-                                            {typeof Icon==="string" ? (
-                                                <img src={Icon} alt={nodeType.label} className="size-5 object-contain rounded-sm"/>
-                                            ):(
-                                                <Icon className="size-5"/>
-                                            )}
-                                            <div className="flex flex-col items-start text-left">
-                                                <span className="font-medium text-sm">{nodeType.label}</span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {nodeType.description}
-                                                </span>
+                </SheetHeader>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                            )
-                        })}
-                    </div>
-                    <Separator className="my-4"/>
-                     <div>
-                        {excutionNodes.map((nodeType)=>{
-                            const Icon=nodeType.icon;
-                            return(
-                                    <div key={nodeType.type} className="w-full justify-start h-auto py-5 px-4
-                                    rounded-none cursor-pointer border-l02 border-transparent hover:border-l-primary"
-                                    onClick={()=>handleNodeSelect(nodeType)}
-                                    >
-                                        <div className="flex items-center gap-6 w-full overflow-hidden">
-                                            {typeof Icon==="string" ? (
-                                                <img src={Icon} alt={nodeType.label} className="size-5 object-contain rounded-sm"/>
-                                            ):(
-                                                <Icon className="size-5"/>
-                                            )}
-                                            <div className="flex flex-col items-start text-left">
-                                                <span className="font-medium text-sm">{nodeType.label}</span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {nodeType.description}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                            )
-                        })}
-                    </div>
+                <div className="mt-4">
+                    {TriggerNodes.map((nodeType)=>(
+                        <OptionRow key={nodeType.type} option={nodeType} onSelect={handleNodeSelect} />
+                    ))}
+                </div>
+
+                <Separator className="my-3"/>
+
+                <div>
+                    {executionNodes.map((nodeType)=>(
+                        <OptionRow key={nodeType.type} option={nodeType} onSelect={handleNodeSelect} />
+                    ))}
+                </div>
             </SheetContent>
-            </Sheet>
+        </Sheet>
     )
 }
