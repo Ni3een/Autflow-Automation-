@@ -19,7 +19,7 @@ type GroqData={
 }
 export const groqExecutor:NodeExecutor<GroqData>=async({
     data,
-    nodeId,context,step,
+    nodeId,context,step,userId,
     publish,
 })=>{
     await publish(
@@ -63,7 +63,7 @@ export const groqExecutor:NodeExecutor<GroqData>=async({
 
     const credential=(await step.run("get-credential",()=>{
         return prisma.credential.findUnique({
-            where:{ id:data.credentialId },
+            where:{ id:data.credentialId, userId },
             select:{ value:true },
         })
     })) as { value:string } | null

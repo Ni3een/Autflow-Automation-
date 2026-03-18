@@ -1,0 +1,155 @@
+"use client"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { useEffect } from "react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
+
+const formSchema = z.object({
+    variableName:z.string().min(1,{message:"Variable name is required"}).regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/,{message:"Variable name must start with a letter or underscore and can only contain letters, numbers, and underscores"}),
+    content:z.string().min(1,"Message content is requuired"),
+    webhookUrl:z.string().min(1,"Webhook URL is required"),
+})
+export type SlackFormValues=z.infer<typeof formSchema>;
+interface Props {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    onSubmit: (values: SlackFormValues) => void
+    defaultValues:Partial<SlackFormValues>;
+}
+
+export const SlackDialog = ({
+    open,
+    onOpenChange,
+    onSubmit,
+    defaultValues={},
+    
+}: Props) => {
+    const form = useForm<SlackFormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            variableName: defaultValues.variableName || "",
+            content: defaultValues.content || "",
+            webhookUrl: defaultValues.webhookUrl || "",
+        }
+    })
+    useEffect(()=>{
+        if(open){
+            form.reset({
+            variableName: defaultValues.variableName || "",
+            content: defaultValues.content || "",
+            webhookUrl: defaultValues.webhookUrl || "",
+            })
+        }
+    },[open,defaultValues,form])
+    const watchVariableName=form.watch("variableName") || "mySlack";
+    const handleSubmit = (values: z.infer<typeof formSchema>) => {
+        onSubmit(values);
+        onOpenChange(false);
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[580px] max-h-[70vh] overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle>Slack Configuration</DialogTitle>
+                    <DialogDescription>
+                        Configure the Slack webhook settings for this node.
+                    </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 mt-4">
+                        <FormField
+                            control={form.control}
+                            name="variableName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Variable Name</FormLabel>
+                                    <FormControl>
+                                        <Input 
+                                            placeholder="mySlack" 
+                                            {...field} 
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Use this name to reference the result in other nodes:{`{{${watchVariableName}.text}}`}
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="webhookUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Webhook URL</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="https://slack.com/api/webhooks/..."
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Get this from Slack:Workspace Settings → Integerations
+                                        Workflows → Webhooks
+                                    </FormDescription>
+                                     <FormDescription>
+                                            Make sure the "key" is content
+                                        </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         
+                            <FormField
+                                control={form.control}
+                                name="content"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Message Content</FormLabel>
+                                        <FormControl>
+                                           <Textarea
+                                           placeholder="Summary:{{mySlack.text}}"
+                                            className="min-h-[80px] font-mono text-sm"
+                                            {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            The message to send to Slack,Use {`{{${watchVariableName}.text}}`} for simple values or {`{{json ${watchVariableName}}}`} to stringify objects
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        <DialogFooter>
+                            <Button className="mt-4"
+                            type="submit"
+                            >Save
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    )
+}

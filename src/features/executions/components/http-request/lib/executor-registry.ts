@@ -7,6 +7,7 @@ import { stripeTriggerExecutor } from "@/features/triggers/components/stripe-tri
 import {openaiExecutor} from "@/features/executions/components/Openai/executor";
 import { geminiExecutor } from "@/features/executions/components/gemini/executor";
 import { groqExecutor } from "@/features/executions/components/groq/executor";
+import { discordExecutor } from "@/features/executions/components/discord/executor";
 export const executorRegistry:Record<NodeType,NodeExecutor>={
     [NodeType.MANUAL_TRIGGER]:manualTriggerExecutor,
     [NodeType.INITIAL]:manualTriggerExecutor,
@@ -17,6 +18,8 @@ export const executorRegistry:Record<NodeType,NodeExecutor>={
     [NodeType.DEEPSEEK]: geminiExecutor,
     [NodeType.OPENAI]: openaiExecutor,
     [NodeType.GROQ]: groqExecutor,
+    [NodeType.DISCORD]: discordExecutor,
+    [NodeType.SLACK]: httpRequestExecutor,
 };
 export const getExecutor=(type:NodeType):NodeExecutor=>{
     const executor=executorRegistry[type];
