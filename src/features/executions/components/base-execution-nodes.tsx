@@ -52,8 +52,8 @@ export const BaseExecutionNode = memo(
                 onSettings={onSettings}
                 onDelete={handleDelete}
                 >
-                    <NodeStatusIndicator status={status} className="rounded-l-2xl" variant="border">
-                    <BaseNode onDoubleClick={onDoubleClick}>
+                    <NodeStatusIndicator status={status} variant="border">
+                    <BaseNode onDoubleClick={onDoubleClick} status={status}>
                     <BaseNodeContent>
                     {typeof icon === "string" ? (
                         <Image src={icon} alt={name} width={16} height={16} />

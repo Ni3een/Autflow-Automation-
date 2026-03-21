@@ -14,7 +14,7 @@ export const BaseNode = forwardRef<HTMLDivElement, BaseNodeProps>(
     <div
       ref={ref}
       className={cn(
-        "relative rounded-sm border border-muted-foreground bg-card text-card-foreground hover:bg-accent",
+        "relative rounded-xl border border-muted-foreground bg-card text-card-foreground hover:bg-accent",
         "hover:ring-1",
         className,
       )}
@@ -23,13 +23,13 @@ export const BaseNode = forwardRef<HTMLDivElement, BaseNodeProps>(
       >
         {props.children}
         {status==="error" && (
-          <XCircleIcon className="absolute right-0.5 bottom-0.5 size-2 text-red-800 stroke-3"/>
+          <XCircleIcon className="absolute -right-2 -bottom-2 size-5 text-red-600 bg-white rounded-full stroke-2"/>
         ) }
         {status==="success" &&(
-          <CheckCircle className="absolute right-0.5 bottom-0.5 size-2 text-green-700 stroke-3"/>
+          <CheckCircle className="absolute -right-2 -bottom-2 size-5 text-emerald-600 fill-white stroke-2"/>
         )}
         {status==="loading" &&(
-          <Loader2Icon className="absolute -right-0.5 -bottom-0.5 size-2 text-blue-700 stroke-3 animate-spin"/>
+          <Loader2Icon className="absolute -right-2 -bottom-2 size-5 text-blue-600 stroke-2 animate-spin bg-white rounded-full"/>
         )}
         </div>
   )

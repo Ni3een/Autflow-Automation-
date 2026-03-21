@@ -22,7 +22,7 @@ import React from "react";
 type EntityHeaderProps = {
     title: string;
     description?: string;
-    newButtonLabel: string;
+    newButtonLabel?: string;
     disabled?: boolean;
     isCreating?: boolean;
 } & (
@@ -237,6 +237,8 @@ export function EntityList<T>({
         </div>
     )
 }
+import { useRouter } from "next/navigation";
+
 interface EntityItemsProps{
     href:string;
     title:string;
@@ -267,8 +269,10 @@ export const EntityItem=({
             await onRemove();
         }
     }
+    const router = useRouter();
+
     return(
-        <Link href={href} prefetch>
+        <div onClick={() => router.push(href)}>
         <Card className={cn("p-4 shadow-none hover:shadow cursor-pointer",isRemoving &&
             "opacity-50 cursore-not-allowed",className
         )}>
@@ -292,7 +296,7 @@ export const EntityItem=({
                     {onRemove &&(
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost" onClick={(e)=>e.stopPropagation}>
+                                <Button size="icon" variant="ghost" onClick={(e)=>e.stopPropagation()}>
 
                                     <MoreVerticalIcon className="size-4"/>
                                 </Button>
@@ -311,7 +315,7 @@ export const EntityItem=({
             )}
             </CardContent>
         </Card>
-        </Link>
+        </div>
     )
 }
 
